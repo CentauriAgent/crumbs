@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crumbs — Settings</title>
+  <style>
+    :root {
+      --bg: #1a1510;
+      --surface: #251f18;
+      --surface-hover: #2e2720;
+      --gold: #D4A853;
+      --gold-dim: #8B7355;
+      --text: #E8DCC8;
+      --text-muted: #8B7355;
+      --border: #3a3228;
+      --danger: #c0392b;
+      --success: #27ae60;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    .header {
+      margin-bottom: 32px;
+    }
+    .header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .header p {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .section h2 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 13px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--gold);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .form-group .hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--bg);
+    }
+    .btn-secondary {
+      background: var(--surface-hover);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .status-msg {
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-top: 12px;
+      display: none;
+    }
+    .status-msg.success {
+      background: rgba(39, 174, 96, 0.15);
+      color: var(--success);
+      display: block;
+    }
+    .status-msg.error {
+      background: rgba(192, 57, 43, 0.15);
+      color: var(--danger);
+      display: block;
+    }
+
+    .profile-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg);
+      border-radius: 8px;
+      margin-top: 12px;
+      display: none;
+    }
+    .profile-card.visible { display: flex; }
+    .profile-card img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+    .profile-card .name {
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .profile-card .npub {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    .footer-link {
+      text-align: center;
+      margin-top: 24px;
+    }
+    .footer-link a {
+      color: var(--gold-dim);
+      text-decoration: none;
+      font-size: 12px;
+    }
+    .footer-link a:hover { color: var(--gold); }
+
+    /* Privacy default toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-switch.active {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--text);
+      transition: transform 0.2s;
+    }
+    .toggle-switch.active::after {
+      transform: translateX(18px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🍞 Crumbs Settings</h1>
+      <p>Configure your Nostr identity and relay connections.</p>
+    </div>
+
+    <!-- Identity -->
+    <div class="section">
+      <h2>🔑 Nostr Identity</h2>
+      <div class="form-group">
+        <label>Private Key (nsec or hex)</label>
+        <input type="password" id="nsecInput" placeholder="nsec1... or hex private key" autocomplete="off">
+        <div class="hint">Your key is stored locally and never leaves this extension. For better security, use a NIP-46 bunker.</div>
+      </div>
+      <div class="form-group">
+        <label>NIP-46 Bunker URL (alternative)</label>
+        <input type="text" id="bunkerInput" placeholder="bunker://..." autocomplete="off">
+        <div class="hint">Connect to a remote signer. Leave blank to use nsec above.</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="saveIdentityBtn">Save Identity</button>
+        <button class="btn btn-secondary" id="testBtn">Test Connection</button>
+      </div>
+      <div class="status-msg" id="identityStatus"></div>
+      <div class="profile-card" id="profileCard">
+        <img id="profileAvatar" src="" alt="">
+        <div>
+          <div class="name" id="profileName"></div>
+          <div class="npub" id="profileNpub"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Relays -->
+    <div class="section">
+      <h2>📡 Relays</h2>
+      <div class="form-group">
+        <label>Relay URLs (one per line)</label>
+        <textarea id="relaysInput" rows="4" placeholder="wss://relay.ditto.pub
+wss://nos.lol
+wss://relay.primal.net"></textarea>
+        <div class="hint">Events are published and queried from these relays.</div>
+      </div>
+      <button class="btn btn-primary" id="saveRelaysBtn">Save Relays</button>
+      <div class="status-msg" id="relayStatus"></div>
+    </div>
+
+    <!-- Defaults -->
+    <div class="section">
+      <h2>⚙️ Defaults</h2>
+      <div class="form-group">
+        <label>Default Privacy</label>
+        <div class="toggle-row">
+          <div class="toggle-switch" id="defaultPrivacyToggle"></div>
+          <span id="defaultPrivacyLabel" style="font-size: 13px; color: var(--text-muted);">Public by default</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-link">
+      <a href="https://crumbs.wtf" target="_blank">crumbs.wtf</a>
+      <span style="color: var(--text-muted); margin: 0 6px;">·</span>
+      <a href="https://crumbs.wtf/about" target="_blank">Create an account</a>
+    </div>
+  </div>
+
+  <script src="options.js" type="module"></script>
+</body>
+</html>

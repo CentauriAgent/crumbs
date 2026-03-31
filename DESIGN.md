@@ -187,7 +187,7 @@ See [Section 5](#5-theme--profile-system) for full theme system design.
 | 30078 | Param. Replaceable | Individual bookmark (`d`=`crumbs:<urlhash>`) | Yes, by d-tag |
 | 30078 | Param. Replaceable | User theme prefs (`d`=`crumbs:theme`) | Yes, by d-tag |
 | 30003 | Param. Replaceable | Bookmark collections (NIP-51) | Yes, by d-tag |
-| 10003 | Replaceable | Global bookmark list (NIP-51, optional compat) | Yes |
+| 10003 | Replaceable | Global bookmark list (NIP-51) — **NOT USED** (to avoid interfering with other apps) | Yes |
 | 0 | Replaceable | User profile (NIP-01, read-only) | Yes |
 | 10002 | Replaceable | Relay list (NIP-65, read-only) | Yes |
 
@@ -903,3 +903,78 @@ Our URL page becomes a universal Nostr social layer for any URL.
 ### Private bookmarks
 
 Private bookmarks (NIP-44 encrypted kind 30078) do NOT emit a kind 1111 companion. Privacy preserved.
+
+---
+
+## ⚠️ SCHEMA UPDATE — Use NIP-51 NOT kind 30078
+
+**Decision:** Drop kind 30078 entirely. Use NIP-51 standard kinds for maximum interoperability.
+
+### Revised data model:
+
+**Kind 30003 (d: "crumbs") — Crumbs bookmark list (NIP-51):**
+The user's Crumbs-specific bookmark list. An addressable replaceable event identified by `pubkey:30003:crumbs`.
+```json
+{
+  "kind": 30003,
+  "content": "",
+  "tags": [
+    ["d", "crumbs"],
+    ["title", "Crumbs Bookmarks"],
+    ["r", "https://example.com/article"],
+    ["r", "https://another.com/page"]
+  ]
+}
+```
+Used for: "what has this user bookmarked in Crumbs?" (fetch once, efficient)
+
+> **Note:** Kind 10003 is intentionally NOT used. It is a global NIP-51 bookmark list shared across all Nostr apps (Amethyst, Damus, etc.). Writing to it would interfere with other apps' bookmark data. Kind 30003 with `d: "crumbs"` gives Crumbs its own isolated namespace while still using standard NIP-51 machinery.
+
+**Kind 30003 — Other bookmark sets / collections (NIP-51):**
+Named collections with other `d` tag identifiers — equivalent to del.icio.us tag bundles.
+```json
+{
+  "kind": 30003,
+  "content": "",
+  "tags": [
+    ["d", "bitcoin-reading-list"],
+    ["title", "Bitcoin Reading List"],
+    ["r", "https://example.com"],
+    ["r", "https://another.com"]
+  ]
+}
+```
+
+**Kind 1111 — Individual bookmark with metadata (NIP-22):**
+Published alongside each save. Carries description, tags, and enables URL queries.
+```json
+{
+  "kind": 1111,
+  "content": "{description} #{tag1} #{tag2}",
+  "tags": [
+    ["I", "{url}", "web"],
+    ["K", "web"],
+    ["i", "{url}", "web"],
+    ["k", "web"],
+    ["title", "{page title}"],
+    ["t", "tag1"],
+    ["t", "tag2"]
+  ]
+}
+```
+Used for: "who saved this URL?" + Ditto interop + per-bookmark metadata
+
+### Save flow:
+1. Publish kind 1111 (individual bookmark with description + tags)
+2. Update kind 30003 d: "crumbs" (append URL to Crumbs bookmark list, replace event)
+3. Optionally update/create other kind 30003 sets (if saving to a named collection)
+
+### Query patterns:
+- User's bookmarks: `{kinds:[30003], authors:[pubkey], "#d":["crumbs"]}` → parse `r` tags
+- Who saved a URL: `{kinds:[1111], "#I":["https://..."]}` + `{kinds:[17], "#i":["https://..."]}`
+- Tag page: `{kinds:[1111], "#t":["bitcoin"]}` 
+- Network feed: `{kinds:[1111], "#K":["web"]}` from followed pubkeys
+
+### Private bookmarks:
+- Omit kind 1111 (no public comment)
+- Add URL to kind 30003 d: "crumbs" with NIP-44 encrypted content containing the metadata
