@@ -10,7 +10,7 @@ export const SEARCH_RELAYS = [
 ];
 
 export const KIND_BOOKMARK_LIST = 10003;
-export const KIND_BOOKMARK_SET = 30003;
+export const KIND_BOOKMARK_SET = 10003;
 export const KIND_COMMENT = 1111;
 export const KIND_REACTION = 17;
 export const KIND_PROFILE = 0;

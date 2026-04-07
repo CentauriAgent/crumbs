@@ -4,7 +4,7 @@
 
 // Nostr event kinds
 export const KIND_BOOKMARK = 30078;       // App-specific data (NIP-78)
-export const KIND_BOOKMARK_SET = 30003;   // Bookmark sets (NIP-51)
+export const KIND_BOOKMARK_SET = 10003;   // Bookmark sets (NIP-51)
 export const KIND_BOOKMARK_LIST = 10003;  // Global bookmark list (NIP-51)
 export const KIND_PROFILE = 0;            // User profile (NIP-01)
 export const KIND_RELAY_LIST = 10002;     // Relay list metadata (NIP-65)
