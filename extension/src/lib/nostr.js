@@ -1,6 +1,6 @@
 /**
  * Nostr event building, signing, and relay publishing for Crumbs extension.
- * Uses nostr-tools for signing. Schema: NIP-51 (kind 30003, d: "crumbs") + NIP-22 (kind 1111).
+ * Uses nostr-tools for signing. Schema: NIP-51 (kind 10003, d: "web-bookmarks") + NIP-22 (kind 1111).
  */
 
 import { finalizeEvent, getPublicKey } from 'nostr-tools/pure';
@@ -75,7 +75,7 @@ export function buildBookmarkEvent(sk, { url, title, description, tags }) {
 }
 
 /**
- * Build an updated kind 30003 (NIP-51 bookmark set, d: "crumbs") event,
+ * Build an updated kind 10003 (NIP-51 bookmark set, d: "web-bookmarks") event,
  * adding a new URL to the Crumbs bookmark list.
  */
 export function buildBookmarkListEvent(sk, existingTags, newUrl) {
@@ -89,7 +89,7 @@ export function buildBookmarkListEvent(sk, existingTags, newUrl) {
   }
 
   const event = finalizeEvent({
-    kind: 30003,
+    kind: 10003,
     content: '',
     tags: [
       ['d', 'crumbs'],
@@ -201,10 +201,10 @@ export function queryRelay(relayUrl, filter, timeoutMs = 6000) {
 }
 
 /**
- * Fetch the user's current kind 30003 (d: "crumbs") bookmark list from relays.
+ * Fetch the user's current kind 10003 (d: "web-bookmarks") bookmark list from relays.
  */
 export async function fetchBookmarkList(pubkey, relays) {
-  const filter = { kinds: [30003], authors: [pubkey], '#d': ['crumbs'], limit: 1 };
+  const filter = { kinds: [10003], authors: [pubkey], '#d': ['web-bookmarks'], limit: 1 };
   let latest = null;
 
   for (const relay of relays) {
@@ -253,7 +253,7 @@ export async function findUserBookmark(pubkey, url, relays) {
 }
 
 /**
- * Check if URL exists in user's kind 30003 (d: "crumbs") bookmark list.
+ * Check if URL exists in user's kind 10003 (d: "web-bookmarks") bookmark list.
  */
 export function isUrlInBookmarkList(bookmarkListEvent, url) {
   if (!bookmarkListEvent) return false;
